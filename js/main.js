@@ -33,7 +33,64 @@ let orderRange = [...Array(blocks.length).keys()];
 suffle(orderRange)
 blocks.forEach((block,index)=>{
        block.style.order = orderRange[index]
+       // Add Click Event
+       block.addEventListener('click', function () {
+
+              // Trigger The Flip Block Function
+              flipBlock(block);
+       });
 })
+
+function flipBlock(selectedBlock) {
+       //Add Class is flipped
+       selectedBlock.classList.add('is-flipped');
+
+       //collect All Flipped Cards
+       let allFlippedBlocks = blocks.filter(flipBlock => flipBlock.classList.contains('is-flipped'));
+
+       //If Theres Two Selected Blocks
+       if (allFlippedBlocks.length === 2){
+              stopClicking()
+              checkMatchedBlocks(allFlippedBlocks[0],allFlippedBlocks[1])
+       }
+}
+function stopClicking() {
+       //add class
+       blocksContainer.classList.add('no-clicking');
+
+       setTimeout(() => {
+
+              //Remove Class No Clicking
+              blocksContainer.classList.remove('no-clicking');
+
+       }, duration);
+}
+
+function checkMatchedBlocks(first,second) {
+       let triesElement = document.querySelector('.tries span');
+       if (first.dataset.technology === second.dataset.technology){
+              first.classList.remove('is-flipped');
+              second.classList.remove('is-flipped');
+              
+              first.classList.add('has-match');
+              second.classList.add('has-match');
+
+              document.getElementById('success').play();
+
+       } else {
+              triesElement.innerHTML = parseInt(triesElement.innerHTML) + 1;
+
+              setTimeout(() => {
+
+                     first.classList.remove('is-flipped');
+                     second.classList.remove('is-flipped');
+              
+              }, duration); 
+       document.getElementById('fail').play();
+       }
+}
+
+
 
 function suffle(array) {
        let current = array.length,
